@@ -1,0 +1,4 @@
+enum FilterType {
+  time,
+  alphabetical,
+}

@@ -8,6 +8,7 @@ import '../../../core/utils/time_utils.dart';
 import '../interactor/controller/home_controller.dart';
 import 'widgets/product_edit_dialog_widget.dart';
 import '../interactor/entities/device_entity.dart';
+import 'package:flutter_automatic_feeder/app/features/home/interactor/entities/filter_type.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -136,12 +137,50 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _showFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Filtrar produtos'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('Ordenar por horário'),
+                onTap: () {
+                  controller.setSortOption(FilterType.time);
+                  controller.sortProductsByTime();
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: const Text('Ordenar alfabeticamente'),
+                onTap: () {
+                  controller.setSortOption(FilterType.alphabetical);
+                  controller.sortProductsAlphabetically();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tratador automático'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: _showFilterDialog,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
