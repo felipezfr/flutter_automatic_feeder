@@ -8,14 +8,17 @@ class HomeController extends BaseController {
     this.repository,
   ) : super(InitialState());
 
-  Future<void> getWordList() async {
+  Future<void> getProducts() async {
     update(LoadingState());
 
-    // final response = await repository.get();
-
-    // response.fold(
-    //   (left) => update(ErrorState(exception: left)),
-    //   (right) => update(SuccessState(data: right)),
-    // );
+    repository.getProducts('terneiros').listen(
+      (event) {
+        print(event);
+        event.fold(
+          (left) => update(ErrorState(exception: left)),
+          (right) => update(SuccessState(data: right)),
+        );
+      },
+    );
   }
 }

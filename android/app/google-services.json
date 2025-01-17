@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "653535312276",
+    "firebase_url": "https://zaffari-automatic-feeder-dev-default-rtdb.firebaseio.com",
+    "project_id": "zaffari-automatic-feeder-dev",
+    "storage_bucket": "zaffari-automatic-feeder-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653535312276:android:ae3d92ecda807d999eb781",
+        "android_client_info": {
+          "package_name": "zaffari.automatic.feeder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE84cZyCwvIE9QZVQci3Mr0dIljZbFqhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -35,11 +35,11 @@ ThemeData lightTheme(BuildContext context) {
       error: Color(0xffEB5757),
     ),
     appBarTheme: const AppBarTheme(
-      color: Color(0xFF17192D),
       centerTitle: true,
-      iconTheme: IconThemeData(color: Colors.white),
-      titleTextStyle: TextStyle(
-          fontWeight: FontWeight.w400, color: Colors.white, fontSize: 18),
+      // titleTextStyle: TextStyle(
+      //   fontWeight: FontWeight.w400,
+      //   fontSize: 18,
+      // ),
     ),
   );
 }
