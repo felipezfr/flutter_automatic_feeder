@@ -76,27 +76,35 @@ class HomeController extends BaseController {
   }
 
   List<ProductEntity> sortProductsByTime([List<ProductEntity>? products]) {
-    bool updateList = products == null ? true : false;
+    try {
+      bool updateList = products == null ? true : false;
 
-    products ??= (state as SuccessState).data as List<ProductEntity>;
-    products.sort((a, b) => a.timeInMinutes.compareTo(b.timeInMinutes));
-    if (updateList) {
-      update(SuccessState(data: products));
+      products ??= (state as SuccessState).data as List<ProductEntity>;
+      products.sort((a, b) => a.timeInMinutes.compareTo(b.timeInMinutes));
+      if (updateList) {
+        update(SuccessState(data: products));
+      }
+      return products;
+    } catch (e) {
+      return products ?? (state as SuccessState).data as List<ProductEntity>;
     }
-    return products;
   }
 
   List<ProductEntity> sortProductsAlphabetically(
       [List<ProductEntity>? products]) {
-    bool updateList = products == null ? true : false;
+    try {
+      bool updateList = products == null ? true : false;
 
-    products ??= (state as SuccessState).data as List<ProductEntity>;
-    // Lógica para ordenar os produtos alfabeticamente
-    products
-        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
-    if (updateList) {
-      update(SuccessState(data: products));
+      products ??= (state as SuccessState).data as List<ProductEntity>;
+      // Lógica para ordenar os produtos alfabeticamente
+      products
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      if (updateList) {
+        update(SuccessState(data: products));
+      }
+      return products;
+    } catch (e) {
+      return products ?? (state as SuccessState).data as List<ProductEntity>;
     }
-    return products;
   }
 }

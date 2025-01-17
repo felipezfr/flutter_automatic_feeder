@@ -18,7 +18,7 @@ class HomeRepositoryImpl implements IHomeRepository {
   @override
   Stream<Output<List<ProductEntity>>> getProducts(String deviceId) async* {
     try {
-      final reference = realTimeDatabase.ref('devices/$deviceId/products');
+      final reference = realTimeDatabase.ref('products/$deviceId');
 
       await for (final event in reference.onValue) {
         final result = _handleProductsEvent(event);
@@ -77,8 +77,7 @@ class HomeRepositoryImpl implements IHomeRepository {
     int timeInMinutes,
   ) async {
     try {
-      final reference =
-          realTimeDatabase.ref('devices/$deviceId/products/$productId');
+      final reference = realTimeDatabase.ref('products/$deviceId/$productId');
       await reference.update({
         'name': name,
         'quantity': quantity,
@@ -139,8 +138,7 @@ class HomeRepositoryImpl implements IHomeRepository {
     int timeInMinutes,
   ) async {
     try {
-      final reference =
-          realTimeDatabase.ref('devices/$deviceId/products').push();
+      final reference = realTimeDatabase.ref('products/$deviceId/').push();
       await reference.set({
         'name': name,
         'quantity': quantity,
@@ -162,8 +160,7 @@ class HomeRepositoryImpl implements IHomeRepository {
     String productId,
   ) async {
     try {
-      final reference =
-          realTimeDatabase.ref('devices/$deviceId/products/$productId');
+      final reference = realTimeDatabase.ref('products/$deviceId/$productId');
       await reference.remove();
       return const Right(true);
     } on DatabaseException catch (e) {
