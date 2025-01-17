@@ -66,4 +66,30 @@ class HomeRepositoryImpl implements IHomeRepository {
       return null;
     }
   }
+
+  @override
+  Future<Output<bool>> updateProduct(
+    String productId,
+    String deviceId,
+    String name,
+    int quantity,
+    int timeInMinutes,
+  ) async {
+    try {
+      final reference =
+          realTimeDatabase.ref('devices/$deviceId/products/$productId');
+      await reference.update({
+        'name': name,
+        'quantity': quantity,
+        'timeInMinutes': timeInMinutes,
+      });
+
+      return const Right(true);
+    } on DatabaseException catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(DatabaseException(
+          message: 'Erro inesperado ao atualizar produto: ${e.toString()}'));
+    }
+  }
 }

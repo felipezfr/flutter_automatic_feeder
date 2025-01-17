@@ -13,12 +13,26 @@ class HomeController extends BaseController {
 
     repository.getProducts('terneiros').listen(
       (event) {
-        print(event);
         event.fold(
           (left) => update(ErrorState(exception: left)),
           (right) => update(SuccessState(data: right)),
         );
       },
+    );
+  }
+
+  Future<void> updateProduct(
+    String productId,
+    String name,
+    int quantity,
+    int timeInMinutes,
+  ) async {
+    await repository.updateProduct(
+      productId,
+      'terneiros',
+      name,
+      quantity,
+      timeInMinutes,
     );
   }
 }

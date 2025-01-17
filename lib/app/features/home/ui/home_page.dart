@@ -4,7 +4,9 @@ import 'package:flutter_modular/flutter_modular.dart';
 
 import '../../../core/alert/alerts.dart';
 import '../../../core/states/base_state.dart';
+import '../../../core/utils/time_utils.dart';
 import '../interactor/controller/home_controller.dart';
+import 'widgets/product_edit_dialog_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -33,6 +35,25 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     controller.removeListener(listener);
     super.dispose();
+  }
+
+  Future<void> _showEditDialog(ProductEntity product) async {
+    if (!mounted) return;
+
+    await showDialog(
+      context: context,
+      builder: (context) => ProductEditDialogWidget(
+        product: product,
+        onSave: (updatedProduct) {
+          controller.updateProduct(
+            updatedProduct.id,
+            updatedProduct.name,
+            updatedProduct.quantity,
+            updatedProduct.timeInMinutes,
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -66,9 +87,11 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Quantidade: ${product.quantity}g'),
-                            Text('Horário: ${product.time}:00'),
+                            Text(
+                                'Horário: ${TimeUtils.formatMinutes(product.timeInMinutes)}'),
                           ],
                         ),
+                        onTap: () => _showEditDialog(product),
                       ),
                     );
                   },

@@ -6,7 +6,7 @@ class ProductsAdapter {
       id: json['id'],
       name: json['name'],
       quantity: json['quantity'],
-      time: json['time'],
+      timeInMinutes: json['timeInMinutes'],
     );
   }
 }

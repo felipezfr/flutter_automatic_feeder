@@ -4,4 +4,12 @@ import '../../../../core/types/types.dart';
 
 abstract class IHomeRepository {
   Stream<Output<List<ProductEntity>>> getProducts(String deviceId);
+
+  Future<Output<bool>> updateProduct(
+    String productId,
+    String deviceId,
+    String name,
+    int quantity,
+    int timeInMinutes,
+  );
 }
