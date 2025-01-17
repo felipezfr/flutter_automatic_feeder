@@ -1,17 +1,34 @@
+import 'package:flutter/foundation.dart';
 import '../../../../core/controllers/controllers.dart';
 import '../../../../core/states/base_state.dart';
 import '../repositories/i_home_repository.dart';
+import '../entities/device_entity.dart';
+import '../entities/product_entity.dart';
 
 class HomeController extends BaseController {
   final IHomeRepository repository;
-  HomeController(
-    this.repository,
-  ) : super(InitialState());
+  final _devicesNotifier = ValueNotifier<List<DeviceEntity>>([]);
 
-  Future<void> getProducts() async {
+  ValueListenable<List<DeviceEntity>> get devices => _devicesNotifier;
+
+  HomeController(this.repository) : super(InitialState());
+
+  Future<void> getDevices() async {
+    repository.getDevices().listen(
+      (event) {
+        event.fold(
+          (left) => update(ErrorState(exception: left)),
+          (right) {
+            _devicesNotifier.value = right;
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> getProducts(String deviceId) async {
     update(LoadingState());
-
-    repository.getProducts('terneiros').listen(
+    repository.getProducts(deviceId).listen(
       (event) {
         event.fold(
           (left) => update(ErrorState(exception: left)),
@@ -21,18 +38,26 @@ class HomeController extends BaseController {
     );
   }
 
-  Future<void> updateProduct(
-    String productId,
-    String name,
-    int quantity,
-    int timeInMinutes,
-  ) async {
+  Future<void> updateProduct(String deviceId, ProductEntity product) async {
     await repository.updateProduct(
-      productId,
-      'terneiros',
-      name,
-      quantity,
-      timeInMinutes,
+      product.id,
+      deviceId,
+      product.name,
+      product.quantity,
+      product.timeInMinutes,
     );
+  }
+
+  Future<void> createProduct(String deviceId, ProductEntity product) async {
+    await repository.createProduct(
+      deviceId,
+      product.name,
+      product.quantity,
+      product.timeInMinutes,
+    );
+  }
+
+  Future<void> deleteProduct(String deviceId, String productId) async {
+    await repository.deleteProduct(deviceId, productId);
   }
 }

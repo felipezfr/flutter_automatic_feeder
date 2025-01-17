@@ -4,9 +4,11 @@ import 'package:flutter_automatic_feeder/app/core/errors/database_exception.dart
 import 'package:flutter_automatic_feeder/app/core/types/types.dart';
 
 import 'package:flutter_automatic_feeder/app/features/home/interactor/entities/product_entity.dart';
+import 'package:flutter_automatic_feeder/app/features/home/interactor/entities/device_entity.dart';
 
 import '../../interactor/repositories/i_home_repository.dart';
 import '../adapters/products_adapter.dart';
+import '../adapters/devices_adapter.dart';
 
 class HomeRepositoryImpl implements IHomeRepository {
   final FirebaseDatabase realTimeDatabase;
@@ -34,8 +36,7 @@ class HomeRepositoryImpl implements IHomeRepository {
     final data = event.snapshot.value;
 
     if (data == null) {
-      return Left(DatabaseException(
-          message: 'Nenhum produto encontrado para este dispositivo'));
+      return const Right([]);
     }
 
     try {
@@ -90,6 +91,86 @@ class HomeRepositoryImpl implements IHomeRepository {
     } catch (e) {
       return Left(DatabaseException(
           message: 'Erro inesperado ao atualizar produto: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Stream<Output<List<DeviceEntity>>> getDevices() async* {
+    try {
+      final reference = realTimeDatabase.ref('devices');
+
+      await for (final event in reference.onValue) {
+        final data = event.snapshot.value;
+
+        if (data == null) {
+          yield Left(
+              DatabaseException(message: 'Nenhum dispositivo encontrado'));
+          continue;
+        }
+
+        try {
+          final Map<String, dynamic> devicesMap =
+              Map<String, dynamic>.from(data as Map);
+
+          final devices = devicesMap.entries.map((entry) {
+            final deviceData = Map<String, dynamic>.from(entry.value as Map);
+            deviceData['id'] = entry.key;
+            return DevicesAdapter.fromJson(deviceData);
+          }).toList();
+
+          yield Right(devices);
+        } catch (e) {
+          yield Left(DatabaseException(
+              message:
+                  'Erro ao processar dados dos dispositivos: ${e.toString()}'));
+        }
+      }
+    } catch (e) {
+      yield Left(DatabaseException(
+          message: 'Erro inesperado ao buscar dispositivos: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Output<bool>> createProduct(
+    String deviceId,
+    String name,
+    int quantity,
+    int timeInMinutes,
+  ) async {
+    try {
+      final reference =
+          realTimeDatabase.ref('devices/$deviceId/products').push();
+      await reference.set({
+        'name': name,
+        'quantity': quantity,
+        'timeInMinutes': timeInMinutes,
+      });
+
+      return const Right(true);
+    } on DatabaseException catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(DatabaseException(
+          message: 'Erro inesperado ao criar produto: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Output<bool>> deleteProduct(
+    String deviceId,
+    String productId,
+  ) async {
+    try {
+      final reference =
+          realTimeDatabase.ref('devices/$deviceId/products/$productId');
+      await reference.remove();
+      return const Right(true);
+    } on DatabaseException catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(DatabaseException(
+          message: 'Erro inesperado ao deletar produto: ${e.toString()}'));
     }
   }
 }

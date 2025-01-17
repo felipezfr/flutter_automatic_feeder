@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import '../../../../core/utils/time_utils.dart';
 import '../../interactor/entities/product_entity.dart';
 
-class ProductEditDialogWidget extends StatefulWidget {
+class ProductDialogWidget extends StatefulWidget {
   final ProductEntity product;
   final Function(ProductEntity product) onSave;
+  final bool isCreating;
 
-  const ProductEditDialogWidget({
+  const ProductDialogWidget({
     super.key,
     required this.product,
     required this.onSave,
+    this.isCreating = false,
   });
 
   @override
-  State<ProductEditDialogWidget> createState() =>
-      _ProductEditDialogWidgetState();
+  State<ProductDialogWidget> createState() => _ProductDialogWidgetState();
 }
 
-class _ProductEditDialogWidgetState extends State<ProductEditDialogWidget> {
+class _ProductDialogWidgetState extends State<ProductDialogWidget> {
   late final TextEditingController nameController;
   late final TextEditingController quantityController;
   late TimeOfDay selectedTime;
@@ -41,7 +42,7 @@ class _ProductEditDialogWidgetState extends State<ProductEditDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Editar Produto'),
+      title: Text(widget.isCreating ? 'Novo Produto' : 'Editar Produto'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
