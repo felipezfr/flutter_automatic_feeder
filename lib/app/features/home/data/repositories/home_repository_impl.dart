@@ -5,6 +5,7 @@ import 'package:flutter_automatic_feeder/app/core/types/types.dart';
 
 import 'package:flutter_automatic_feeder/app/features/home/interactor/entities/product_entity.dart';
 import 'package:flutter_automatic_feeder/app/features/home/interactor/entities/device_entity.dart';
+import 'package:intl/intl.dart';
 
 import '../../interactor/repositories/i_home_repository.dart';
 import '../adapters/products_adapter.dart';
@@ -82,6 +83,7 @@ class HomeRepositoryImpl implements IHomeRepository {
         'name': name,
         'quantity': quantity,
         'timeInMinutes': timeInMinutes,
+        'updateAt': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
       });
 
       return const Right(true);
@@ -143,6 +145,7 @@ class HomeRepositoryImpl implements IHomeRepository {
         'name': name,
         'quantity': quantity,
         'timeInMinutes': timeInMinutes,
+        'updateAt': DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
       });
 
       return const Right(true);

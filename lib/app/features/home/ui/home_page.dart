@@ -122,9 +122,29 @@ class _HomePageState extends State<HomePage> {
       value: selectedDeviceId,
       hint: const Text('Selecione um dispositivo'),
       items: devices.map((device) {
+        bool isOnline = device.timestamp == null
+            ? false
+            : device.timestamp!
+                .isAfter(DateTime.now().subtract(const Duration(seconds: 20)));
+
         return DropdownMenuItem<String>(
           value: device.id,
-          child: Text(device.name),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(device.name),
+              Icon(
+                isOnline ? Icons.wifi_rounded : Icons.wifi_off_rounded,
+                color: isOnline ? Colors.green : Colors.red,
+              ),
+              // Text(
+              //   isOnline ? 'Online' : 'Offline',
+              //   style: TextStyle(
+              //     color: isOnline ? Colors.green : Colors.red,
+              //   ),
+              // ),
+            ],
+          ),
         );
       }).toList(),
       onChanged: (String? deviceId) {
@@ -221,15 +241,38 @@ class _HomePageState extends State<HomePage> {
                         itemCount: products.length,
                         itemBuilder: (context, index) {
                           final product = products[index];
+
+                          bool isSynced = product.syncTimeDevice == null ||
+                                  product.updateAt == null
+                              ? false
+                              : product.syncTimeDevice!
+                                      .isAfter(product.updateAt!) ||
+                                  product.syncTimeDevice!
+                                      .isAtSameMomentAs(product.updateAt!);
                           return Card(
                             child: ListTile(
                               title: Text(product.name),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              subtitle: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Quantidade: ${product.quantity}g'),
-                                  Text(
-                                      'Horário: ${TimeUtils.formatMinutes(product.timeInMinutes)}'),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Quantidade: ${product.quantity}g'),
+                                      Text(
+                                          'Horário: ${TimeUtils.formatMinutes(product.timeInMinutes)}'),
+                                    ],
+                                  ),
+                                  Icon(
+                                    isSynced
+                                        ? Icons.cloud_done_outlined
+                                        : Icons.cloud_sync_rounded,
+                                    color: isSynced
+                                        ? Colors.green
+                                        : Colors.blueAccent,
+                                  ),
                                 ],
                               ),
                               onTap: () => _showEditDialog(product),

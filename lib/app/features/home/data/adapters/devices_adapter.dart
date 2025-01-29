@@ -5,6 +5,9 @@ class DevicesAdapter {
     return DeviceEntity(
       id: json['id'],
       name: json['name'],
+      timestamp: json['timestamp'] != null
+          ? DateTime.tryParse(json['timestamp'])
+          : null,
     );
   }
 }

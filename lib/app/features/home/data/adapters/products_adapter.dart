@@ -7,6 +7,11 @@ class ProductsAdapter {
       name: json['name'],
       quantity: json['quantity'],
       timeInMinutes: json['timeInMinutes'],
+      updateAt:
+          json['updateAt'] != null ? DateTime.tryParse(json['updateAt']) : null,
+      syncTimeDevice: json['syncTimeDevice'] != null
+          ? DateTime.tryParse(json['syncTimeDevice'])
+          : null,
     );
   }
 }
